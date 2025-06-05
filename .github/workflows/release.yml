@@ -1,0 +1,43 @@
+name: 'Release'
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Release ${{ github.ref_name }}
+          body: |
+            ## 🚀 Replace Comment Action v${{ github.ref_name }}
+            
+            Find, delete, and recreate GitHub comments to move them to the bottom of conversations.
+            
+            ### Features
+            - ✅ **Find comments** using flexible search criteria
+            - 🗑️ **Delete existing comments** automatically  
+            - ✨ **Create fresh comments** at the bottom for visibility
+            - 🔧 **Perfect for CI/CD** status updates and bot notifications
+            
+            ### Usage
+            ```yaml
+            - uses: johanwulf/replace-comment@${{ github.ref_name }}
+              with:
+                issue-number: ${{ github.event.pull_request.number }}
+                body-includes: '<!-- my-comment -->'
+                body: |
+                  <!-- my-comment -->
+                  Your comment content here
+            ```
+          draft: false
+          prerelease: false

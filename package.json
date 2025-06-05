@@ -1,0 +1,25 @@
+{
+  "name": "replace-comment",
+  "version": "1.0.0",
+  "description": "Find, delete, and recreate a GitHub issue or pull request comment to move it to the bottom of the conversation",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johanwulf/replace-comment.git"
+  },
+  "keywords": [
+    "github",
+    "actions",
+    "comment",
+    "replace",
+    "delete",
+    "create",
+    "pr",
+    "issue"
+  ],
+  "author": "Johan Wulf",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/johanwulf/replace-comment/issues"
+  },
+  "homepage": "https://github.com/johanwulf/replace-comment#readme"
+}

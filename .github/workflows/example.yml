@@ -1,0 +1,41 @@
+name: 'Example: E2E Test Results'
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  e2e-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run E2E Tests
+        id: tests
+        run: |
+          echo "Running E2E tests..."
+          sleep 2
+          echo "status=✅ All tests passed!" >> $GITHUB_OUTPUT
+          echo "total=42" >> $GITHUB_OUTPUT
+          echo "duration=3m 24s" >> $GITHUB_OUTPUT
+
+      - name: Update E2E Results Comment
+        uses: ./
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body-includes: '<!-- e2e-test-results -->'
+          comment-author: 'github-actions[bot]'
+          body: |
+            <!-- e2e-test-results -->
+            ## 🧪 E2E Test Results
+            ${{ steps.tests.outputs.status }}
+            - **Total tests:** ${{ steps.tests.outputs.total }}
+            - **Duration:** ${{ steps.tests.outputs.duration }}
+            - **Browser:** Chrome 120
+            - **Commit:** ${{ github.sha }}
+            - **Workflow:** [${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            *This comment will always appear at the bottom for easy visibility! 🚀*
+          reactions: 'rocket,eyes'
