@@ -23,7 +23,7 @@ jobs:
           echo "duration=3m 24s" >> $GITHUB_OUTPUT
 
       - name: Update E2E Results Comment
-        uses: ./
+        uses: johanwulf/replace-comment@v1.0.0
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body-includes: '<!-- e2e-test-results -->'

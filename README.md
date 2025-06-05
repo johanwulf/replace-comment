@@ -19,7 +19,7 @@ When you **update** a comment, it stays in its original chronological position. 
 
 ```yaml
 - name: Replace E2E Test Results Comment
-  uses: johanwulf/replace-comment@v1
+  uses: johanwulf/replace-comment@v1.0.0
   with:
     issue-number: ${{ github.event.pull_request.number }}
     body-includes: '<!-- e2e-test-results -->'
@@ -39,7 +39,7 @@ When you **update** a comment, it stays in its original chronological position. 
 
 ```yaml
 - name: Replace Build Report
-  uses: johanwulf/replace-comment@v1
+  uses: johanwulf/replace-comment@v1.0.0
   with:
     token: ${{ secrets.GITHUB_TOKEN }}
     repository: ${{ github.repository }}
@@ -108,7 +108,7 @@ jobs:
       
       - name: Update test results comment
         if: github.event_name == 'pull_request'
-        uses: johanwulf/replace-comment@v1
+        uses: johanwulf/replace-comment@v1.0.0
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body-includes: '<!-- test-results -->'
@@ -127,7 +127,7 @@ jobs:
 
 ```yaml
 - name: Update deployment status
-  uses: johanwulf/replace-comment@v1
+  uses: johanwulf/replace-comment@v1.0.0
   with:
     issue-number: ${{ github.event.pull_request.number }}
     body-regex: '<!-- deploy-status-.*? -->'
@@ -154,7 +154,7 @@ jobs:
     ls -la dist/ | awk '{print "| " $9 " | " $5 " |"}' >> build-report.md
 
 - name: Post build report
-  uses: johanwulf/replace-comment@v1
+  uses: johanwulf/replace-comment@v1.0.0
   with:
     issue-number: ${{ github.event.pull_request.number }}
     body-includes: '<!-- build-artifacts -->'
@@ -195,7 +195,7 @@ Only create comments when needed:
 ```yaml
 - name: Replace comment
   if: github.event_name == 'pull_request' && failure()
-  uses: johanwulf/replace-comment@v1
+  uses: johanwulf/replace-comment@v1.0.0
   with:
     # ... your config
 ```
