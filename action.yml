@@ -1,0 +1,102 @@
+name: 'Replace Comment'
+description: 'Find, delete, and recreate a GitHub issue or pull request comment to move it to the bottom of the conversation'
+author: 'johanwulf'
+branding:
+  icon: 'message-circle'
+  color: 'blue'
+
+inputs:
+  token:
+    description: 'GITHUB_TOKEN or a repo scoped PAT'
+    required: false
+    default: ${{ github.token }}
+  repository:
+    description: 'The full name of the repository containing the issue or pull request'
+    required: false
+    default: ${{ github.repository }}
+  issue-number:
+    description: 'The number of the issue or pull request in which to find and replace the comment'
+    required: true
+  body-includes:
+    description: 'A string to search for in the body of comments. Cannot be used with body-regex'
+    required: false
+  body-regex:
+    description: 'A regular expression to search for in the body of comments. Cannot be used with body-includes'
+    required: false
+  comment-author:
+    description: 'The GitHub user name of the comment author'
+    required: false
+  direction:
+    description: 'Search direction, specified as first or last'
+    required: false
+    default: 'first'
+  nth:
+    description: '0-indexed number, specifying which comment to update if multiple are found'
+    required: false
+    default: '0'
+  body:
+    description: 'The comment body. Cannot be used with body-path'
+    required: false
+  body-path:
+    description: 'The path to a file containing the comment body. Cannot be used with body'
+    required: false
+  reactions:
+    description: 'A comma separated list of reactions to add to the comment (+1, -1, laugh, confused, heart, hooray, rocket, eyes)'
+    required: false
+
+outputs:
+  comment-id:
+    description: 'The ID of the created comment'
+  comment-url:
+    description: 'The URL of the created comment'
+  comment-body:
+    description: 'The body of the created comment'
+  found-comment-id:
+    description: 'The ID of the comment that was found and deleted (if any)'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Find existing comment
+      uses: peter-evans/find-comment@v3
+      id: find-comment
+      with:
+        token: ${{ inputs.token }}
+        repository: ${{ inputs.repository }}
+        issue-number: ${{ inputs.issue-number }}
+        body-includes: ${{ inputs.body-includes }}
+        body-regex: ${{ inputs.body-regex }}
+        comment-author: ${{ inputs.comment-author }}
+        direction: ${{ inputs.direction }}
+        nth: ${{ inputs.nth }}
+
+    - name: Delete existing comment
+      if: steps.find-comment.outputs.comment-id != ''
+      shell: bash
+      run: |
+        curl -L \
+          -X DELETE \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer ${{ inputs.token }}" \
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          "https://api.github.com/repos/${{ inputs.repository }}/issues/comments/${{ steps.find-comment.outputs.comment-id }}"
+        echo "Deleted comment ${{ steps.find-comment.outputs.comment-id }}"
+
+    - name: Create new comment
+      uses: peter-evans/create-or-update-comment@v4
+      id: create-comment
+      with:
+        token: ${{ inputs.token }}
+        repository: ${{ inputs.repository }}
+        issue-number: ${{ inputs.issue-number }}
+        body: ${{ inputs.body }}
+        body-path: ${{ inputs.body-path }}
+        reactions: ${{ inputs.reactions }}
+
+    - name: Set outputs
+      shell: bash
+      run: |
+        echo "comment-id=${{ steps.create-comment.outputs.comment-id }}" >> $GITHUB_OUTPUT
+        echo "comment-url=${{ steps.create-comment.outputs.comment-url }}" >> $GITHUB_OUTPUT
+        echo "comment-body=${{ steps.create-comment.outputs.comment-body }}" >> $GITHUB_OUTPUT
+        echo "found-comment-id=${{ steps.find-comment.outputs.comment-id }}" >> $GITHUB_OUTPUT
