@@ -1,4 +1,4 @@
-# Replace Comment
+# replace-comment
 
 A GitHub Action that finds, deletes, and recreates a comment to move it to the bottom of the conversation. This is perfect for CI/CD status updates, bot notifications, and any content you want to keep highly visible.
 
