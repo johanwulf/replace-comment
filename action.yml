@@ -1,5 +1,5 @@
 name: 'Replace Comment'
-description: 'Find, delete, and recreate a GitHub issue or pull request comment to move it to the bottom of the conversation'
+description: 'Find, delete, and recreate GitHub comments to keep them at the bottom of conversations'
 author: 'johanwulf'
 branding:
   icon: 'message-circle'
