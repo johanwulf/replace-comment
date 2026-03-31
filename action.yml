@@ -58,7 +58,7 @@ runs:
   using: 'composite'
   steps:
     - name: Find existing comment
-      uses: peter-evans/find-comment@v3
+      uses: peter-evans/find-comment@3eae4d37986fb5a8592848f6a574fdf654e61f9e # v3
       id: find-comment
       with:
         token: ${{ inputs.token }}
@@ -83,7 +83,7 @@ runs:
         echo "Deleted comment ${{ steps.find-comment.outputs.comment-id }}"
 
     - name: Create new comment
-      uses: peter-evans/create-or-update-comment@v4
+      uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043 # v4
       id: create-comment
       with:
         token: ${{ inputs.token }}
